@@ -1,2 +1,3 @@
-# plugin
-contextone marketplace for agents (skills &amp; plugins)
+# contextone
+
+contextone plugins for agents (skills &amp; plugins)
