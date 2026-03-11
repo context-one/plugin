@@ -17,10 +17,18 @@ else
 fi
 
 # Run login
-OUTPUT=$("$CLI" login 2>&1)
-echo "$OUTPUT"
+OUTPUT=$("$CLI" login)
 
 # Persist credentials
 mkdir -p "$CRED_DIR"
 echo "$OUTPUT" > "$CRED_FILE"
 chmod 600 "$CRED_FILE"
+
+# Only confirm success/failure, never print tokens
+if echo "$OUTPUT" | grep -q "access_token"; then
+  echo "Login successful."
+else
+  echo "Login failed:" >&2
+  echo "$OUTPUT" >&2
+  exit 1
+fi

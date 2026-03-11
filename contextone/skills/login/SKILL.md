@@ -12,4 +12,4 @@ Run the following command using the Bash tool:
 bash "${CLAUDE_PLUGIN_ROOT}/scripts/login.sh"
 ```
 
-If the output contains `access_token`, confirm login succeeded. If it fails, show the error.
+Display the result. If it fails, show the error.

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Event dispatch script for Context One activity tracking.
 # Called by Claude Code lifecycle hooks. Receives event type as $1.
+# Hook JSON payload is read from stdin (see https://code.claude.com/docs/en/hooks).
 #
 # Unlike other scripts in this repo, this script does NOT use
 # set -euo pipefail — all failures must be silent to avoid
@@ -14,8 +15,18 @@ if [ -z "$EVENT_TYPE" ]; then
   exit 0
 fi
 
-# Pre-flight: session ID must be set by Claude Code
-if [ -z "${CLAUDE_SESSION_ID:-}" ]; then
+# Read hook JSON payload from stdin
+HOOK_INPUT="$(cat)"
+
+# Extract session_id from the hook payload
+SESSION_ID="$(echo "$HOOK_INPUT" | jq -r '.session_id // empty' 2>/dev/null)"
+if [ -z "$SESSION_ID" ]; then
+  # Fallback: try python3 if jq is not available
+  SESSION_ID="$(echo "$HOOK_INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('session_id',''))" 2>/dev/null)"
+fi
+
+# Pre-flight: session ID must be present in the hook payload
+if [ -z "$SESSION_ID" ]; then
   exit 0
 fi
 
@@ -33,11 +44,16 @@ else
   exit 0
 fi
 
-# Derive project name from git repo or working directory
-PROJECT="$(basename "$(git rev-parse --show-toplevel 2>/dev/null || pwd)")"
+# Derive project name from the hook payload cwd, falling back to git/pwd
+HOOK_CWD="$(echo "$HOOK_INPUT" | jq -r '.cwd // empty' 2>/dev/null)"
+if [ -n "$HOOK_CWD" ]; then
+  PROJECT="$(basename "$(git -C "$HOOK_CWD" rev-parse --show-toplevel 2>/dev/null || echo "$HOOK_CWD")")"
+else
+  PROJECT="$(basename "$(git rev-parse --show-toplevel 2>/dev/null || pwd)")"
+fi
 
 # Build base arguments
-ARGS=(event --type "$EVENT_TYPE" --session-id "$CLAUDE_SESSION_ID" --project "$PROJECT")
+ARGS=(event --type "$EVENT_TYPE" --session-id "$SESSION_ID" --project "$PROJECT")
 
 # For session.start: add repo and worktree metadata
 if [ "$EVENT_TYPE" = "session.start" ]; then
