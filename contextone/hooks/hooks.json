@@ -17,6 +17,15 @@
     ],
     "Stop": [
       {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/event.sh memory.extract"
+          }
+        ]
+      },
+      {
         "matcher": "shutdown",
         "hooks": [
           {

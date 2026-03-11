@@ -64,12 +64,17 @@ case "$EVENT_TYPE" in
     # 3-second timeout using Perl (macOS doesn't have GNU timeout)
     perl -e 'alarm 3; exec @ARGV' -- "$CLI" "${ARGS[@]}" 2>/dev/null || true
     ;;
+  memory.extract)
+    HOOK_CWD_RESOLVED="${HOOK_CWD:-$(pwd)}"
+    ("$CLI" extract --session-id "$SESSION_ID" --cwd "$HOOK_CWD_RESOLVED" --mode incremental 2>/dev/null || true) &
+    disown
+    ;;
   session.stop)
     # Send event synchronously (3s timeout)
     perl -e 'alarm 3; exec @ARGV' -- "$CLI" "${ARGS[@]}" 2>/dev/null || true
-    # Launch memory extraction in background (fire-and-forget)
+    # Launch final memory extraction in background (fire-and-forget)
     HOOK_CWD_RESOLVED="${HOOK_CWD:-$(pwd)}"
-    ("$CLI" extract --session-id "$SESSION_ID" --cwd "$HOOK_CWD_RESOLVED" 2>/dev/null || true) &
+    ("$CLI" extract --session-id "$SESSION_ID" --cwd "$HOOK_CWD_RESOLVED" --mode final 2>/dev/null || true) &
     disown
     ;;
   *)
