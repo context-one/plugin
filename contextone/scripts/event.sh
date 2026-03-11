@@ -52,32 +52,10 @@ else
   PROJECT="$(basename "$(git rev-parse --show-toplevel 2>/dev/null || pwd)")"
 fi
 
-# Build base arguments
+# Build base arguments — CLI auto-detects repo and worktree from --cwd
 ARGS=(event --type "$EVENT_TYPE" --session-id "$SESSION_ID" --project "$PROJECT")
-
-# For session.start: add repo and worktree metadata
-if [ "$EVENT_TYPE" = "session.start" ]; then
-  GIT_OPTS=()
-  if [ -n "$HOOK_CWD" ]; then
-    GIT_OPTS=(-C "$HOOK_CWD")
-  fi
-
-  # Read owner/repo from git remote
-  REMOTE_URL="$(git "${GIT_OPTS[@]}" remote get-url origin 2>/dev/null || true)"
-  if [ -n "$REMOTE_URL" ]; then
-    # Handle both SSH (git@github.com:owner/repo.git) and HTTPS (https://github.com/owner/repo.git)
-    REPO="$(echo "$REMOTE_URL" | sed -E 's#^(https?://[^/]+/|git@[^:]+:)##; s#\.git$##')"
-    if [ -n "$REPO" ]; then
-      ARGS+=(--repo "$REPO")
-    fi
-  fi
-
-  # Detect worktree: if --git-dir and --git-common-dir differ, this is a worktree
-  GIT_DIR="$(git "${GIT_OPTS[@]}" rev-parse --git-dir 2>/dev/null || true)"
-  GIT_COMMON="$(git "${GIT_OPTS[@]}" rev-parse --git-common-dir 2>/dev/null || true)"
-  if [ -n "$GIT_DIR" ] && [ -n "$GIT_COMMON" ] && [ "$GIT_DIR" != "$GIT_COMMON" ]; then
-    ARGS+=(--worktree)
-  fi
+if [ -n "$HOOK_CWD" ]; then
+  ARGS+=(--cwd "$HOOK_CWD")
 fi
 
 # Dispatch: sync for session lifecycle, async for everything else
