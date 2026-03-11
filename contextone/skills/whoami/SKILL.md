@@ -1,6 +1,7 @@
 ---
 name: whoami
 description: Show the currently authenticated Contextone user
+disable-model-invocation: true
 ---
 
 # Contextone Whoami

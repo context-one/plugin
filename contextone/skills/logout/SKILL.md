@@ -1,6 +1,7 @@
 ---
 name: logout
 description: Log out of Contextone and clear stored credentials
+disable-model-invocation: true
 ---
 
 # Contextone Logout
