@@ -33,6 +33,17 @@ A `SessionStart` hook (`contextone/hooks/hooks.json`) runs `install-cli.sh` auto
 - Uses `set -euo pipefail`; falls back from `jq` to `python3` for JSON parsing
 - Idempotent — skips download if current version already installed
 
+## Event Tracking
+
+`contextone/scripts/event.sh` dispatches activity events to the Context One API:
+- Called by all lifecycle hooks defined in `contextone/hooks/hooks.json`
+- Receives event type as `$1` (e.g., `session.start`, `tool.read`)
+- Uses `CLAUDE_SESSION_ID` from the hook environment
+- Pre-flight checks: silently exits if no session ID, no credentials, or no CLI
+- Sync for `session.start` and `session.stop`; async (backgrounded) for all other events
+- **Exception to `set -euo pipefail` convention**: this script intentionally uses no strict mode — all failures must be silent to avoid breaking Claude Code sessions
+- Design spec: `docs/superpowers/specs/2026-03-11-activity-dashboard-design.md`
+
 ## Development
 
 There is no build step, linter, or automated test suite. Validation is manual:
@@ -42,5 +53,5 @@ There is no build step, linter, or automated test suite. Validation is manual:
 ## Conventions
 
 - Conventional commits: `fix:`, `feat:`, `chore:`, etc.
-- Shell scripts use `set -euo pipefail` with explicit stderr error messages
+- Shell scripts use `set -euo pipefail` with explicit stderr error messages (exception: `event.sh` uses no strict mode — see Event Tracking)
 - Skills use YAML frontmatter for metadata
