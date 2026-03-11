@@ -47,4 +47,4 @@ fi
 "$CLI" handoff \
   --session-id "$SESSION_ID" \
   --cwd "$PWD" \
-  --token "$TOKEN"
+  --token="$TOKEN"
