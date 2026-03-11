@@ -87,8 +87,12 @@ case "$EVENT_TYPE" in
     perl -e 'alarm 3; exec @ARGV' -- "$CLI" "${ARGS[@]}" 2>/dev/null || true
     ;;
   session.stop)
-    # 3-second timeout using Perl (macOS doesn't have GNU timeout)
+    # Send event synchronously (3s timeout)
     perl -e 'alarm 3; exec @ARGV' -- "$CLI" "${ARGS[@]}" 2>/dev/null || true
+    # Launch memory extraction in background (fire-and-forget)
+    HOOK_CWD_RESOLVED="${HOOK_CWD:-$(pwd)}"
+    ("$CLI" extract --session-id "$SESSION_ID" --cwd "$HOOK_CWD_RESOLVED" 2>/dev/null || true) &
+    disown
     ;;
   *)
     # Background subshell — returns immediately; disown survives hook runner exit
