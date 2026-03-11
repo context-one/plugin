@@ -3,17 +3,9 @@ set -euo pipefail
 
 CRED_FILE="$HOME/.contextone/credentials.json"
 
-# Resolve CLI
-if command -v contextone >/dev/null 2>&1; then
-  CLI=contextone
-elif [ -x "$HOME/.local/bin/contextone" ]; then
-  CLI="$HOME/.local/bin/contextone"
-else
-  echo "CLI not found. Nothing to log out from." >&2
+if [ -f "$CRED_FILE" ]; then
   rm -f "$CRED_FILE"
-  exit 0
+  echo "Logged out and credentials cleared."
+else
+  echo "No credentials found. Already logged out."
 fi
-
-"$CLI" logout || true
-rm -f "$CRED_FILE"
-echo "Logged out and credentials cleared."
