@@ -1,0 +1,17 @@
+{
+  "name": "context-one-plugin",
+  "owner": {
+    "name": "Context One",
+    "url": "https://contextone.dev"
+  },
+  "metadata": {
+    "description": "Official Context One plugins for Claude Code"
+  },
+  "plugins": [
+    {
+      "name": "contextone",
+      "source": "./contextone",
+      "description": "Context One CLI integration for Claude Code"
+    }
+  ]
+}

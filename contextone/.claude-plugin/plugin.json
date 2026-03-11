@@ -1,0 +1,13 @@
+{
+  "name": "contextone",
+  "version": "1.0.0",
+  "description": "Context One CLI integration for Claude Code",
+  "author": {
+    "name": "Context One",
+    "url": "https://contextone.dev"
+  },
+  "homepage": "https://contextone.dev",
+  "repository": "https://github.com/context-one/plugin",
+  "license": "proprietary",
+  "keywords": ["contextone", "context", "cli"]
+}

@@ -1,0 +1,9 @@
+{
+  "hooks": [
+    {
+      "event": "post-install",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/install-cli.sh",
+      "description": "Download and install the Context One CLI binary"
+    }
+  ]
+}
