@@ -7,10 +7,25 @@ API_URL="${CONTEXTONE_API_URL:-https://contextone.dev}"
 
 # Detect platform
 ARCH=$(uname -m)
-case "$ARCH" in
-  arm64|aarch64) TARGET="aarch64-apple-darwin" ;;
-  x86_64)        TARGET="x86_64-apple-darwin" ;;
-  *)             echo "Unsupported architecture: $ARCH" >&2; exit 1 ;;
+OS=$(uname -s)
+case "$OS" in
+  Darwin)
+    case "$ARCH" in
+      arm64|aarch64) TARGET="aarch64-apple-darwin" ;;
+      x86_64)        TARGET="x86_64-apple-darwin" ;;
+      *)             echo "Unsupported architecture: $ARCH" >&2; exit 1 ;;
+    esac
+    ;;
+  Linux)
+    case "$ARCH" in
+      aarch64) TARGET="aarch64-unknown-linux-gnu" ;;
+      x86_64)  TARGET="x86_64-unknown-linux-gnu" ;;
+      *)       echo "Unsupported architecture: $ARCH" >&2; exit 1 ;;
+    esac
+    ;;
+  *)
+    echo "Unsupported OS: $OS" >&2; exit 1
+    ;;
 esac
 
 echo "Fetching latest $CHANNEL release for $TARGET..."
