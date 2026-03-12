@@ -33,15 +33,21 @@ case "$ACTION" in
   list)
     "$CLI" periodic-list --token="$TOKEN"
     ;;
+  workspaces)
+    "$CLI" workspace-list --token="$TOKEN"
+    ;;
   create)
     "$CLI" periodic-create --token="$TOKEN" "$@"
+    ;;
+  run)
+    "$CLI" periodic-run --token="$TOKEN" "$@"
     ;;
   delete)
     "$CLI" periodic-delete --token="$TOKEN" "$@"
     ;;
   *)
     echo "Unknown action: $ACTION" >&2
-    echo "Usage: periodic.sh <list|create|delete> [args...]" >&2
+    echo "Usage: periodic.sh <list|workspaces|create|run|delete> [args...]" >&2
     exit 1
     ;;
 esac
