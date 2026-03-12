@@ -15,7 +15,7 @@ The CLI binary is automatically downloaded and installed to `~/.local/bin` durin
 
 | Command | Description |
 |---------|-------------|
-| `/contextone:login` | Authenticate via OAuth2 browser flow |
+| `/contextone:auth` | Authenticate via OAuth2 browser flow |
 | `/contextone:logout` | Clear stored credentials |
 | `/contextone:whoami` | Show the currently authenticated user |
 

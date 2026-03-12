@@ -1,5 +1,5 @@
 ---
-name: login
+name: auth
 description: Log in to Contextone via OAuth2 browser flow
 disable-model-invocation: true
 ---

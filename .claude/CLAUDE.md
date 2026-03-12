@@ -13,7 +13,7 @@ Two-tier plugin registration:
 - `contextone/.claude-plugin/plugin.json` — individual plugin metadata (name, version, description)
 
 Three skills defined as `SKILL.md` files in `contextone/skills/`:
-- `login/SKILL.md` — OAuth2 browser authentication via `contextone login`
+- `auth/SKILL.md` — OAuth2 browser authentication via `contextone login`
 - `logout/SKILL.md` — clears stored credentials via `contextone logout`
 - `whoami/SKILL.md` — displays authenticated user via `contextone whoami`
 
@@ -47,7 +47,7 @@ A `SessionStart` hook (`contextone/hooks/hooks.json`) runs `install-cli.sh` auto
 ## Development
 
 There is no build step, linter, or automated test suite. Validation is manual:
-- Test commands via `/contextone:login`, `/contextone:logout`, `/contextone:whoami` in Claude Code
+- Test commands via `/contextone:auth`, `/contextone:logout`, `/contextone:whoami` in Claude Code
 - Install script self-validates with `contextone --help`
 
 ## Conventions
@@ -55,3 +55,11 @@ There is no build step, linter, or automated test suite. Validation is manual:
 - Conventional commits: `fix:`, `feat:`, `chore:`, etc.
 - Shell scripts use `set -euo pipefail` with explicit stderr error messages (exception: `event.sh` uses no strict mode — see Event Tracking)
 - Skills use YAML frontmatter for metadata
+
+## Versioning
+
+The plugin version in `contextone/.claude-plugin/plugin.json` follows semantic versioning and **must be bumped with every commit to main**:
+- `fix:` → patch bump (e.g., 1.0.0 → 1.0.1)
+- `feat:` → minor bump (e.g., 1.0.0 → 1.1.0)
+- Breaking changes (`!` suffix or renamed/removed skills/commands) → major bump (e.g., 1.0.0 → 2.0.0)
+- `chore:`, `docs:`, `refactor:` → patch bump
