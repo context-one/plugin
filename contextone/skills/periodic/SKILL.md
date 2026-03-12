@@ -24,6 +24,7 @@ If the user wants to create a new job, extract these parameters from their reque
 - **schedule**: a cron expression (e.g. "0 9 * * *" for daily at 9am, "0 */6 * * *" for every 6 hours)
 - **prompt**: what the job should do — can be a plain text instruction or a skill invocation like `/contextone:skill args`
 - **timeout_seconds** (optional): kill the job if it runs longer than this
+- **workspace_path** (optional): directory name inside ~/workspace to start in (e.g. "my-repo")
 
 Common cron patterns:
 - Every hour: `0 * * * *`
@@ -40,6 +41,16 @@ bash "${CLAUDE_PLUGIN_ROOT}/scripts/periodic.sh" create \
 ```
 
 Add `--timeout-seconds <N>` if the user specified a timeout.
+Add `--workspace-path <dir>` if the user specified a workspace/repo directory.
+
+### Run a job now
+If the user wants to trigger a job immediately (e.g. "run my-job now", "test this job", "execute it"):
+
+If they refer to it by name, first list jobs to find the ID, then run:
+
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/periodic.sh" periodic-run --id <ID>
+```
 
 ### Delete a job
 If the user wants to remove a job, they may refer to it by name or ID. If by name, first list jobs to find the ID, then delete:
